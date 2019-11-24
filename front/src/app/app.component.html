@@ -1,0 +1,64 @@
+<div class="container">
+  <div>
+    <button class="btn btn-outline-secondary mr-2" (click)="switchView('showDeployNewSmartProgram')">Deploy New Smart Program</button>
+    <button class="btn btn-outline-secondary mr-2" (click)="switchView('showWorkersList')">Workers List</button>
+  </div>
+
+  <div *ngIf="showDeployNewSmartProgram">
+    <h1>New Smart Program</h1>
+
+      <div class="form-group">
+        <label for="horizonAddress">Horizon Address</label>
+        <input type="text" class="form-control" value="https://horizon-testnet.stellar.org" #horizonAddress>
+      </div>
+
+      <div class="form-group">
+        <label for="networkPassphrase">Network Passphrase</label>
+        <input type="text" class="form-control" value="Test SDF Network ; September 2015" #networkPassphrase>
+      </div>
+
+      <div class="form-group">
+        <label for="ipfsNodeAddress">IPFS Node Address</label>
+        <input type="text" class="form-control" #ipfsNodeAddress>
+      </div>
+
+      <div class="form-group">
+        <label for="imageAddress">Image Address</label>
+        <input type="text" class="form-control" #imageAddress>
+      </div>
+
+      <div class="form-group">
+        <label for="imageHash">Image Hash</label>
+        <input type="text" class="form-control" #imageHash>
+      </div>
+
+      <div class="form-group">
+        <label for="smartAccountKeyPair">Smart Account Key Pair</label>
+        <input type="text" class="form-control" [(ngModel)]="smartAccountPublicKey">
+        <input type="text" class="form-control" [(ngModel)]="smartAccountPrivateKey">
+        <button class="btn btn-outline-secondary mr-2" (click)="generateNewKeyPair()">Generate New KeyPair</button>
+      </div>
+
+      <div class="form-group">
+        <label for="smartAccountCreatorSeed">Smart Account Creator Seed</label>
+        <button type="button" class="btn btn-outline-secondary mr-2" placement="right" ngbTooltip="a secret key needed to pay transaction fee for create smart account">more info</button>
+        <input type="text" class="form-control" #smartAccountCreatorSeed>
+      </div>
+
+      <div class="form-group">
+        <label for="executionFee">Execution Fee (in stroops)</label>
+        <input type="text" class="form-control" value="1000" #executionFee>
+      </div>
+
+      <button type="submit" class="btn btn-success" (click)="onClickSubmit(horizonAddress.value, networkPassphrase.value, ipfsNodeAddress.value, imageAddress.value, imageHash.value, smartAccountCreatorSeed.value, executionFee.value)">Submit</button>
+
+  </div>
+
+  <div *ngIf="showWorkersList">
+    <p>Workers</p>
+  </div>
+
+
+</div>
+
+<router-outlet></router-outlet>
