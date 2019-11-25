@@ -1,0 +1,28 @@
+version: "3.4"
+services:
+  
+  front:
+    build:
+      context: front
+
+  back:
+    build:
+      context: back
+    environment:
+      - DB_HOST=db
+      - DB_USERNAME=webui
+      - DB_NAME=webui
+      - DB_PASSWORD=secure_password
+      - DB_PORT=5432
+
+  db:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_DB=webui
+      - POSTGRES_USER=webui
+      - POSTGRES_PASSWORD=secure_password
+    volumes:
+      - ./pgdata-webui:/var/lib/postgresql/db
+      - ./back/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+
+
