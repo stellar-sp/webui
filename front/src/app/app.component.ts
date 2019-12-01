@@ -29,11 +29,11 @@ export class AppComponent {
   constructor(private http: HttpClient) { }
 
   onSubmit() {
-
+    var self = this;
     (async function main() {
-      smartAccountCreatorKeyPair = KeyPair.fromSecret(smartAccountCreatorSeed)
+      smartAccountCreatorKeyPair = KeyPair.fromSecret(self.smartAccountCreatorSeed)
 
-      var server = new Server(this.horizonAddress)
+      var server = new Server(self.horizonAddress)
 
       smartAccountCreator = server.loadAccount(smartAccountCreatorKeyPair.address)
       const fee = await server.fetchBaseFee()
