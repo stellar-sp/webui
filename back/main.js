@@ -1,47 +1,45 @@
-var http = require('http');
-var axios = require("axios");
+var nodes = require('./nodes.js');
+var postgres = require('./postgres.js')
 
 var bodyParser = require('body-parser')
 var express = require('express'),
     app = express(),
     port = process.env.PORT || 3000;
 
-const Pool = require('pg').Pool
-const dbPool = new Pool({
-  user: process.env.DB_USERNAME,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-})
+var cors = require('cors');
+
+app.use(cors({origin: '*'}));
+
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.listen(port);
 
-app.get('/workers', function (req, res) {
-	
-	dbPool.query('select * from workers', (error, results) => {
-        if (error) {
-            throw error
-        }
+app.get('/api/workers', function (req, res) {
 
-        res.status(200).json(results.rows)
+    postgres.Worker.findAll().then(workers => {
+        res.status(200).json(workers)
     });
 })
 
-app.post('/workers', function (req, res) {
+app.post('/api/workers', function (req, res) {
 
     const { public_key, address, horizon_address, network_passphrase, ipfs_address } = req.body
+    let worker = {
+        public_key: public_key,
+        address: address,
+        horizon_address: horizon_address,
+        network_passphrase: network_passphrase,
+        ipfs_address: ipfs_address,
+        is_up: 0
+    }
 
-    dbPool.query('insert into workers(public_key, address, horizon_address, network_passphrase, ipfs_address) values ($1, $2, $3, $4, $5)', [public_key, address, horizon_address, network_passphrase, ipfs_address], (error, results) => {
-
-        if (error) {
-          throw error
+    postgres.Worker.create(worker).then(result => {
+        if (result) {
+            res.status(201).send(`worker added!`);
         }
-
-        response.status(201).send(`User added with ID: ${result.insertId}`);
-    });
+        else {
+            res.status(500).send(error);
+        }
+    })
 })
-
-
