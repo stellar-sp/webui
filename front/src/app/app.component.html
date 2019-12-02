@@ -14,22 +14,22 @@
 
       <div class="form-group">
         <label for="networkPassphrase">Network Passphrase</label>
-        <input type="text" class="form-control" value="Test SDF Network ; September 2015" #networkPassphrase>
+        <input type="text" class="form-control" value="{{ networkPassphrase }}" (input)="networkPassphrase = $event.target.value">
       </div>
 
       <div class="form-group">
-        <label for="ipfsNodeAddress">IPFS Node Address</label>
-        <input type="text" class="form-control" #ipfsNodeAddress>
+        <label>Base State</label>
+        <input type="text" class="form-control" value="{{ emptyFileOnIpfsHash }}" (input)="emptyFileOnIpfsHash = $event.target.value">
       </div>
 
       <div class="form-group">
         <label for="imageAddress">Image Address</label>
-        <input type="text" class="form-control" #imageAddress>
+        <input type="text" class="form-control" (input)="imageAddress = $event.target.value">
       </div>
 
       <div class="form-group">
         <label for="imageHash">Image Hash</label>
-        <input type="text" class="form-control" #imageHash>
+        <input type="text" class="form-control" (input)="imageHash = $event.target.value">
       </div>
 
       <div class="form-group" *ngFor="let worker of selected_workers; index as i">
@@ -42,7 +42,7 @@
 
         <div style="display: flex;">
           <span style="text-align: center; width: 100px;">address</span>
-          <input type="text" class="form-control" value="{{ worker.address }}">
+          <input type="text" class="form-control" value="{{ worker.address }}" (input)="selected_workers[i].address = $event.target.value">
         </div>
 
       </div>
@@ -64,7 +64,11 @@
 
       <div class="form-group">
         <label for="executionFee">Execution Fee (in stroops)</label>
-        <input type="text" class="form-control" value="1000" #executionFee>
+        <input type="text" class="form-control" value="{{ executionFee }}" (input)="executionFee = $event.target.value">
+      </div>
+
+      <div *ngIf="result_message != ''">
+        <pre>{{ result_message }}</pre>
       </div>
 
       <button type="button" class="btn btn-success" (click)="onSubmit()">Submit</button>
