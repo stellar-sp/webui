@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Server, Network, Keypair, TransactionBuilder, Operation } from 'stellar-sdk';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,12 @@ export class AppComponent {
   imageHash = '';
   executionFee = '1000';
 
+  newWorkerPublicKey = '';
+  newWorkerAddress = '';
+  newWorkerHorizon = 'https://horizon-testnet.stellar.org';
+  newWorkerNetworkPassphrase = 'Test SDF Network ; September 2015';
+  newWorkerIpfsAddress = '';
+
   workers = [];
   result_message = "";
   selected_workers = [
@@ -34,6 +41,15 @@ export class AppComponent {
       address: ''
     }
   ];
+
+  addNewWorkerResultMessage = "";
+
+  subscription: Subscription;
+
+  ngOnInit() {
+    const source = interval(10000);
+    this.subscription = source.subscribe(val => this.getWorkersList());
+  }
 
   constructor(private http: HttpClient) { }
 
@@ -107,9 +123,9 @@ export class AppComponent {
 
   async signAndSubmit(self, ops) {
 
-    const smartAccount = await self.loadAccountInfo(self, self.smartAccountPublicKey);
+    const smartAccount = await self.server.loadAccount(accountPublicKey)
 
-    const fee = await self.getBaseFee(self)
+    const fee = await self.server.fetchBaseFee();
 
     var txBuilder = new TransactionBuilder(smartAccount, { fee : fee, networkPassphrase : self.networkPassphrase })
       .setTimeout(0);
@@ -124,25 +140,11 @@ export class AppComponent {
 
     tx.sign(smartAccountKeyPair)
 
-    var submitTxResult = await self.submitTx(self, tx)
-    console.log(submitTxResult)
-  }
-
-  async getBaseFee(self) {
-    var fee = await self.server.fetchBaseFee();
-    return fee;
-  }
-
-  async loadAccountInfo(self, accountPublicKey) {
-    var account = await self.server.loadAccount(accountPublicKey)
-    return account
-  }
-
-  async submitTx(self, tx) {
     const xdr = tx.toEnvelope().toXDR().toString("base64")
     console.log(xdr);
-    var res = await self.server.submitTransaction(tx);
-    return res;
+
+    var submitTxResult = await self.server.submitTransaction(tx);
+    console.log(submitTxResult)
   }
 
   generateNewKeyPair() {
@@ -195,10 +197,32 @@ export class AppComponent {
     }
   }
 
-  add_new_worker() {
+  addEmptyWorkerToSelectedList() {
     this.selected_workers.push({
       public_key: '',
       address: ''
     })
+  }
+
+  addNewWorker() {
+    var self = this;
+
+    this.addNewWorkerResultMessage = "adding wokrer...";
+
+    const newWorkerSpec = {
+      public_key : this.newWorkerPublicKey,
+      address: this.newWorkerAddress,
+      horizon_address: this.newWorkerHorizon,
+      network_passphrase: this.newWorkerNetworkPassphrase,
+      ipfs_address: this.newWorkerIpfsAddress
+    }
+
+    this.http.post('http://localhost:3000/api/workers', newWorkerSpec).subscribe(
+      (val) => { },
+      (response) => {
+        self.addNewWorkerResultMessage += " done! ";
+        self.getWorkersList();
+      }
+    )
   }
 }

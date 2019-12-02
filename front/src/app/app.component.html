@@ -5,7 +5,7 @@
   </div>
 
   <div *ngIf="showDeployNewSmartProgram">
-    <h1>New Smart Program</h1>
+    <h2>New Smart Program</h2>
 
       <div class="form-group">
         <label for="horizonAddress">Horizon Address</label>
@@ -47,7 +47,7 @@
 
       </div>
 
-      <button type="button" class="btn btn-primary" (click)="add_new_worker()">add another worker</button>
+      <button type="button" class="btn btn-primary" (click)="addEmptyWorkerToSelectedList()">add another worker</button>
 
       <div class="form-group" style="margin-top: 20px;">
         <label for="smartAccountKeyPair">Smart Account Key Pair</label>
@@ -123,7 +123,37 @@
         </div>
       </div>
 
+      <h2 style="margin-top: 150px;">Add New Worker</h2>
+      <div class="form-group">
+        <label>public key</label>
+        <input type="text" class="form-control" (input)="newWorkerPublicKey = $event.target.value">
+      </div>
 
+      <div class="form-group">
+        <label>address</label>
+        <input type="text" class="form-control" (input)="newWorkerAddress = $event.target.value">
+      </div>
+
+      <div class="form-group">
+        <label>horizon address</label>
+        <input type="text" class="form-control" value="{{ newWorkerHorizon }}" (input)="newWorkerHorizon = $event.target.value">
+      </div>
+
+      <div class="form-group">
+        <label>network passphrase</label>
+        <input type="text" class="form-control" value="{{ newWorkerNetworkPassphrase }}" (input)="newWorkerNetworkPassphrase = $event.target.value">
+      </div>
+
+      <div class="form-group">
+        <label>ipfs address</label>
+        <input type="text" class="form-control" (input)="newWorkerIpfsAddress = $event.target.value">
+      </div>
+
+      <div *ngIf="addNewWorkerResultMessage != ''">
+        <pre>{{ addNewWorkerResultMessage }}</pre>
+      </div>
+
+      <button type="button" class="btn btn-success" (click)="addNewWorker()">Submit</button>
   </div>
 
 

@@ -39,7 +39,7 @@ iframe {
   background-color: #ebebeb;
   border-radius: 5px;
   width: 100%;
-  height: calc(100% - 30px);
+/*  height: calc(100% - 30px); */
   left: 0;
   top: 15px;
 }
@@ -58,7 +58,7 @@ iframe {
   background-color: #cccccc;
   border-radius: 5px;
   width: 100%;
-  height: calc(100% - 30px);
+  /*height: calc(100% - 30px);*/
   left: 0;
   top: 15px;
 }
@@ -74,7 +74,7 @@ iframe {
 
 .container-table100 {
   width: 100%;
-  min-height: 100vh;
+  /*min-height: 100vh;*/
   background: #fff;
   margin-top: 40px;
   display: -webkit-box;
@@ -162,7 +162,7 @@ th, td {
 }
 
 .table100-body {
-  max-height: 585px;
+  /*max-height: 585px;*/
   overflow: auto;
 }
 
