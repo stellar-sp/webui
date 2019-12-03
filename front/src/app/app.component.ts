@@ -12,6 +12,9 @@ import { interval, Subscription } from 'rxjs';
 @Injectable()
 export class AppComponent {
   title = 'webui';
+
+  apiUrl = '';
+
   server = null;
   horizonAddress = 'https://horizon-testnet.stellar.org';
   networkPassphrase = 'Test SDF Network ; September 2015';
@@ -46,12 +49,18 @@ export class AppComponent {
 
   subscription: Subscription;
 
-  ngOnInit() {
+  configUrl = 'assets/config.json'
+
+  async ngOnInit() {
     const source = interval(10000);
     this.subscription = source.subscribe(val => this.getWorkersList());
+
+    var conf = await this.http.get(this.configUrl).toPromise();
+    this.apiUrl = conf.apiUrl;
   }
 
   constructor(private http: HttpClient) { }
+
 
   onSubmit() {
     var self = this;
@@ -67,7 +76,8 @@ export class AppComponent {
 
         self.smartAccountCreator = await self.server.loadAccount(smartAccountCreatorKeyPair.publicKey());
 
-        var lastestLedgerPromise = await self.http.get(self.horizonAddress + "/ledgers?order=desc&limit=1").toPromise()
+        let lastestLedgerPromise: any;
+        lastestLedgerPromise = await self.http.get(self.horizonAddress + "/ledgers?order=desc&limit=1").toPromise();
         var baseReserve = (lastestLedgerPromise._embedded.records[0].base_reserve_in_stroops / 10000000) * 2 + 10;
 
         const fee = await self.server.fetchBaseFee()
@@ -105,7 +115,7 @@ export class AppComponent {
           }))
         }
 
-        const percent51 = parseInt(self.selected_workers.length / 2) + 1
+        const percent51 = parseInt(self.selected_workers.length / 2 + "") + 1
         smartProgramSpecOps.push(Operation.setOptions({ masterWeight : 0, lowThreshold: percent51, medThreshold: percent51, highThreshold: percent51 }))
 
         await self.signAndSubmit(self, smartProgramSpecOps)
@@ -123,7 +133,9 @@ export class AppComponent {
 
   async signAndSubmit(self, ops) {
 
-    const smartAccount = await self.server.loadAccount(accountPublicKey)
+    var smartAccountKeyPair = Keypair.fromSecret(self.smartAccountPrivateKey)
+
+    const smartAccount = await self.server.loadAccount(smartAccountKeyPair.publicKey())
 
     const fee = await self.server.fetchBaseFee();
 
@@ -135,8 +147,6 @@ export class AppComponent {
     }
 
     var tx = txBuilder.build()
-
-    var smartAccountKeyPair = Keypair.fromSecret(self.smartAccountPrivateKey)
 
     tx.sign(smartAccountKeyPair)
 
@@ -166,7 +176,7 @@ export class AppComponent {
   }
 
   getWorkersList() {
-    this.http.get('http://localhost:3000/api/workers').subscribe((data: any[])=>{
+    this.http.get(this.apiUrl).subscribe((data: any[])=>{
       console.log(data);
       this.workers = data;
     })
@@ -217,7 +227,7 @@ export class AppComponent {
       ipfs_address: this.newWorkerIpfsAddress
     }
 
-    this.http.post('http://localhost:3000/api/workers', newWorkerSpec).subscribe(
+    this.http.post(this.apiUrl, newWorkerSpec).subscribe(
       (val) => { },
       (response) => {
         self.addNewWorkerResultMessage += " done! ";

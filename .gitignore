@@ -2,3 +2,4 @@ front/node_modules
 back/node_modules
 .idea
 back/env
+front/src/assets/config.json

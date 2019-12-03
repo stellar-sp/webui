@@ -6,7 +6,8 @@ ADD . /app
 RUN npm install && \
     npm build
 
+CMD ["ng", "serve"]
 
-FROM nginx
+#FROM nginx
 
-COPY --from=0 /app/dist/ /usr/share/nginx/html/
+#COPY --from=0 /app/dist/ /usr/share/nginx/html/
