@@ -55,7 +55,8 @@ export class AppComponent {
     const source = interval(10000);
     this.subscription = source.subscribe(val => this.getWorkersList());
 
-    var conf = await this.http.get(this.configUrl).toPromise();
+    let conf : any;
+    conf = await this.http.get(this.configUrl).toPromise();
     this.apiUrl = conf.apiUrl;
   }
 

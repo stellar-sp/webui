@@ -4,12 +4,20 @@ services:
   front:
     build:
       context: front
+    volumes:
+      - ./front/src/assets/config.json:/app/front/src/assets/config.json
+    ports:
+      - 80:80
 
   back:
     build:
       context: back
-    env_file:
-      - back/env
+    environment:
+      - DB_HOST=db
+      - DB_USERNAME=webui
+      - DB_NAME=webui
+      - DB_PASSWORD=secure_password
+      - DB_PORT=5432
     ports:
       - 3000:3000
     restart: always

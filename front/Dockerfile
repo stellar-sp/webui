@@ -1,13 +1,14 @@
-FROM node:10.15
+#FROM node:10.15
 
-WORKDIR /app
-ADD . /app
+#WORKDIR /app
+#ADD . /app
 
-RUN npm install && \
-    npm build
+#RUN npm install
 
-CMD ["ng", "serve"]
+#CMD ["./node_modules/.bin/ng", "serve"]
 
-#FROM nginx
+FROM nginx
 
 #COPY --from=0 /app/dist/ /usr/share/nginx/html/
+
+ADD ./dist/webui/ /usr/share/nginx/html/
