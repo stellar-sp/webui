@@ -24,7 +24,7 @@
     "stellar-sdk": "^0.6.2"
   },
   "devDependencies": {
-    "axios": "^0.17",
+    "axios": "^0.21",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
